@@ -1,16 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title> 
+    <title>Document</title>
 </head>
+
 <body>
-   <h1>Bootcamp Javascript</h1> 
-   <p>Bienvenidos</p>
 
+    <form action="index.html">
+        <input type="hidden" name="codigo"  id="codigo">
+        <div>
+            <label for="nombre">Nombre</label>
+            <input type="text" name="nombre" id="nombre">
+        </div>
+        <div>
+            <label for="cantidad">Cantidad</label>
+            <input type="number" name="cantidad" id="cantidad">
+        </div>
+        <div>
+            <label for="precio">Precio</label>
+            <input type="number" name="precio" id="precio">
+        </div>
+        <div>
+            <label for="categoria">Categoria</label>
+            <select name="categoria" id="categoria">
+                <option vlaue="1">Categoria 1</option>
+                <option vlaue="2">Categoria 2</option>
+                <option vlaue="3">Categoria 3</option>
+                <option vlaue="4">Categoria 4</option>
+            </select>
 
-   <script src="index.js"></script>
+        </div>
+
+        <div>
+            <button type="submit">Guardar</butto>
+        </div>
+
+    </form>
+
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <td>Codigo</td>
+                    <td>Nombre</td>
+                    <td>Cantidad</td>
+                    <td>Precio</td>
+                    <td>Total</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2">Totales:</td>
+                    <td id="cantidad-total">0</td>
+                    <td id="precio-total">0</td>
+                    <td id="gran-total">0</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <script src="index.js"></script>
+
 </body>
+
 </html>
