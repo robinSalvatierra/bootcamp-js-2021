@@ -65,6 +65,17 @@ const reducer = (state, action) => {
         }
     }
 
+    if( action.type == "producto-seleccionado")
+    {
+
+        const codigo = action.payload.codigo;
+        return{
+            ...state,
+            producto: state.productos.find(x => x.codigo == codigo) || {}
+
+        }
+    }
+
     return state;
 };
 
@@ -81,9 +92,20 @@ const unsuscribe = store.subscribe(() => {
         latestState = currentState;
         console.log("estado: ", currentState);
         renderTable(currentState.productos)
+        renderForm(currentState.producto)
     }
 });
 
+function renderForm(producto)
+{
+
+
+    inputCodigo.value = producto.codigo;
+    inputNombre.value = producto.nombre || "";
+    inputCantidad.value = producto.cantidad || "";
+    inputPrecio.value = producto.precio || ""
+    selectCategoria.value = producto.categoria || 1;
+}
 
 function renderTable(productos)
 {
@@ -110,7 +132,7 @@ function renderTable(productos)
             </div>
         </td>`
 
-        const [edita, eliminar] = tr.getElementsByTagName('a')
+        const [editar, eliminar] = tr.getElementsByTagName('a')
         eliminar.addEventListener("click", (event)=> {
             event.preventDefault();
             store.dispatch({
@@ -120,6 +142,17 @@ function renderTable(productos)
                 }
             })
         })
+
+
+        editar.addEventListener("click", (event)=> {
+            event.preventDefault();
+            store.dispatch({
+                type: "producto-seleccionado",
+                payload:{
+                    codigo: item.codigo
+                }
+            })
+        } )
         return tr;
 
     })
@@ -141,6 +174,63 @@ function renderTable(productos)
     }
 
     
+}
+
+form.addEventListener("submit", onSubmit);
+
+/**
+ * 
+ * @param {Event} event 
+ */
+function onSubmit(event) {
+    event.preventDefault();
+
+    const data = new FormData(form)
+    const values = Array.from(data.entries());
+
+    const [frmCodigo, frmNombre, frmCantidad, frmPrecio, frmCategoria] = values
+
+    const codigo = parseInt(frmCodigo[1])
+    const nombre = frmNombre[1];
+    const cantidad = parseFloat(frmCantidad[1]);
+    const precio = parseFloat(frmPrecio[1]);
+    const categoria = parseInt(frmCategoria[1]);
+
+    if(codigo)
+    {
+        store.dispatch({
+            type: "producto-modificado",
+            payload: {
+                codigo,
+                nombre,
+                cantidad,
+                precio,
+                categoria
+            }
+        })
+    }else {
+        store.dispatch({
+            type: "producto-agregado",
+            payload: {
+               // codigo,
+                nombre,
+                cantidad,
+                precio,
+                categoria
+            }
+        })
+    }
+
+
+    store.dispatch({
+        type: "producto-seleccionado",
+        payload: {
+            codigo: null
+
+        }
+    })
+
+   // form.reset()
 }
 
 store.dispatch({ 
