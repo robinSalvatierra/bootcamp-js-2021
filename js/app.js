@@ -3,13 +3,14 @@ const preloadedState = {
     productos: []
 };
 
-const middlewares = Redux.applyMiddleware(loggerMiddleware);
+const middlewares = Redux.applyMiddleware(loggerMiddleware, addorModifyProductMiddleware, generadorCodigoProductoBuilder(0));
 const store = Redux.createStore(reducer, preloadedState, middlewares);
 
-let latestState;
+
 
 
 //llamar unsuscribe() cuando se deba desuscribirse al ejecutar un action
+/*
 const unsuscribe = store.subscribe(() => {
     let currentState = store.getState();
     if (currentState != latestState)
@@ -20,23 +21,17 @@ const unsuscribe = store.subscribe(() => {
         ui.renderForm(currentState.producto)
     }
 });
+*/
 
+store.subscribe(dispatchOnChange (store, (state) => {
+    ui.renderTable(state.productos)
+    ui.renderForm(state.producto)
+}))
 
 ui.onFormSubmit = (producto) => {
-    if(producto.codigo)
-    {
-        store.dispatch(
-           productoModificado(producto)
-        )
-    }else {
-        store.dispatch(
-           productoAgregado(producto)
-        )
-    }
-
 
     store.dispatch(
-       productoSeleccionado(null)
+       agregarOModificarProducto(producto)
     )
 }
 
@@ -46,8 +41,17 @@ ui.onEditarClick = (codigo) => {
     )
 }
 
-ui.onEliminarClick = (codigo) => {
-    store.dispatch(
-       productoEliminado(codigo)
-    )
+ui.onEliminarClick = codigo =>  store.dispatch( productoEliminado(codigo))
+
+
+function dispatchOnChange(store, disparador) {
+    let latestState;
+    return function(){
+        let currentState = store.getState();
+        if (currentState != latestState)
+        {
+            latestState = currentState;
+            disparador(currentState)
+        }
+    }
 }
